@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Employer Dashboard</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        /* Login Success Message */
+
+        .login-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: white;
+            background: #2563eb;
+            border-radius: 6px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .logout {
+            background: #dc2626;
+        }
+
+        .applications {
+            background: #16a34a;
+        }
+
+        .job {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .job h2 {
+            color: #1e3a8a;
+        }
+
+        .delete {
+            background: #dc2626;
+        }
+
+        .view-applications {
+            background: #16a34a;
+        }
+
+        .application-count {
+            display: inline-block;
+            background: #f59e0b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .empty {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>
+        Employer Dashboard
+    </h1>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- LOGIN SUCCESS MESSAGE -->
+
+    {% if login_success %}
+
+        <div
+            class="login-success"
+            id="loginSuccess"
+        >
+            Employer Login Successful!
+        </div>
+
+        <script>
+
+            setTimeout(function() {
+
+                var message =
+                    document.getElementById("loginSuccess");
+
+                if (message) {
+                    message.remove();
+                }
+
+            }, 2000);
+
+        </script>
+
+    {% endif %}
+
+
+    <!-- Welcome -->
+
+    <div class="welcome">
+
+        <h2>
+            Welcome, {{ request.user.username }}
+        </h2>
+
+        <p>
+            Manage your job postings and applications from here.
+        </p>
+
+    </div>
+
+
+    <!-- Dashboard Buttons -->
+
+    <div class="buttons">
+
+        <a
+            href="{% url 'employer_add_job' %}"
+            class="btn"
+        >
+            + Add New Job
+        </a>
+
+
+        <a
+            href="{% url 'employer_applications' %}"
+            class="btn applications"
+        >
+            👥 View All Applications
+        </a>
+
+
+        <a
+            href="{% url 'logout' %}"
+            class="btn logout"
+        >
+            Logout
+        </a>
+
+    </div>
+
+
+    <!-- Posted Jobs -->
+
+    <h2>
+        My Posted Jobs
+    </h2>
+
+
+    {% if posted_jobs %}
+
+
+        {% for job in posted_jobs %}
+
+
+            <div class="job">
+
+
+                <h2>
+                    {{ job.title }}
+                </h2>
+
+
+                <p>
+
+                    <strong>
+                        Company:
+                    </strong>
+
+                    {{ job.company }}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Location:
+                    </strong>
+
+                    {{ job.location }}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Salary:
+                    </strong>
+
+                    {{ job.salary }}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Description:
+                    </strong>
+
+                    {{ job.description }}
+
+                </p>
+
+
+                <!-- Application Count -->
+
+                <div class="application-count">
+
+                    👥
+                    {{ job.applications.count }}
+                    Applicant(s)
+
+                </div>
+
+
+                <br>
+
+
+                <!-- View Applications -->
+
+                <a
+                    href="{% url 'employer_applications' %}"
+                    class="btn view-applications"
+                >
+                    View Applications
+                </a>
+
+
+                <!-- Delete Job -->
+
+                <a
+                    href="{% url 'delete_job' job.id %}"
+                    class="btn delete"
+                >
+                    Delete Job
+                </a>
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <div class="empty">
+
+            <p>
+                You have not posted any jobs yet.
+            </p>
+
+            <a
+                href="{% url 'employer_add_job' %}"
+                class="btn"
+            >
+                + Post Your First Job
+            </a>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

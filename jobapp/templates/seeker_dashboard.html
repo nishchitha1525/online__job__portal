@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Job Seeker Dashboard</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        .header {
+            background: #007bff;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .actions a {
+            text-decoration: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            background: #28a745;
+        }
+
+        .actions .logout {
+            background: #dc3545;
+        }
+
+        .job-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .job-card h2 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .job-card p {
+            margin: 8px 0;
+        }
+
+        .apply-btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            margin-top: 12px;
+        }
+
+        .apply-btn:hover {
+            background: #218838;
+        }
+
+        .no-jobs {
+            background: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- Header -->
+
+<div class="header">
+
+    <h1>Job Seeker Dashboard</h1>
+
+</div>
+
+
+<div class="container">
+
+    <!-- Welcome Section -->
+
+    <div class="welcome">
+
+        <h2>
+            Welcome, {{ request.user.username }}
+        </h2>
+
+        <p>
+            Search for jobs and manage your applications from here.
+        </p>
+
+    </div>
+
+
+    <!-- Dashboard Actions -->
+
+    <div class="actions">
+
+        <a href="{% url 'my_applications' %}">
+            📋 My Applications
+        </a>
+
+        <a href="{% url 'logout' %}" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+
+    <!-- Available Jobs -->
+
+    <h2>Available Jobs</h2>
+
+
+    {% for job in jobs %}
+
+        <div class="job-card">
+
+            <h2>{{ job.title }}</h2>
+
+            <p>
+                <strong>Company:</strong>
+                {{ job.company }}
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                {{ job.location }}
+            </p>
+
+            <p>
+                <strong>Salary:</strong>
+                {{ job.salary }}
+            </p>
+
+            <p>
+                <strong>Description:</strong>
+                {{ job.description }}
+            </p>
+
+            <a
+                href="{% url 'apply' %}?job_id={{ job.id }}"
+                class="apply-btn"
+            >
+                Apply for Job
+            </a>
+
+        </div>
+
+    {% empty %}
+
+        <div class="no-jobs">
+
+            <h3>No Jobs Available</h3>
+
+            <p>
+                Please check again later.
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

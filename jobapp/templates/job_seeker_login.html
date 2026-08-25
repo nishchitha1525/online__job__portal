@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}
+Job Seeker Login
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <h1>👤 Job Seeker Login</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <!-- Username -->
+
+        <label for="username">
+            Username
+        </label>
+
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            required
+        >
+
+
+        <!-- Password -->
+
+        <label for="password">
+            Password
+        </label>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+        >
+
+
+        <!-- Show Password -->
+
+        <div class="show-password">
+
+            <input
+                type="checkbox"
+                id="showPassword"
+                onclick="togglePassword()"
+            >
+
+            <label for="showPassword">
+                Show Password
+            </label>
+
+        </div>
+
+
+        <!-- Login Button -->
+
+        <button
+            type="submit"
+            class="login-button"
+        >
+            Login
+        </button>
+
+    </form>
+
+
+    <br>
+
+
+    <!-- Forgot Password -->
+
+    <a href="{% url 'forgot_password' %}">
+        Forgot Password?
+    </a>
+
+
+    <br><br>
+
+
+    <!-- Register -->
+
+    <p>
+        Don't have an account?
+
+        <a href="{% url 'job_seeker_register' %}">
+            Register as Job Seeker
+        </a>
+    </p>
+
+
+    <br>
+
+
+    <!-- Back -->
+
+    <a href="{% url 'login' %}">
+        ← Back to Login Selection
+    </a>
+
+
+</div>
+
+
+<style>
+
+.login-container {
+
+    width: 400px;
+
+    margin: 50px auto;
+
+    padding: 30px;
+
+    text-align: center;
+
+}
+
+
+/* Labels */
+
+.login-container label {
+
+    display: block;
+
+    text-align: left;
+
+    margin-top: 15px;
+
+    margin-bottom: 5px;
+
+    font-weight: bold;
+
+}
+
+
+/* Username and Password */
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+
+    display: block;
+
+    width: 100%;
+
+    padding: 12px;
+
+    box-sizing: border-box;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+}
+
+
+/* Show Password */
+
+.show-password {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-top: 5px;
+
+    margin-bottom: 20px;
+
+    text-align: left;
+
+}
+
+
+.show-password input[type="checkbox"] {
+
+    width: auto;
+
+    margin: 0 8px 0 0;
+
+}
+
+
+.show-password label {
+
+    display: inline;
+
+    margin: 0;
+
+    font-weight: normal;
+
+}
+
+
+/* Login Button */
+
+.login-button {
+
+    display: block;
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+    background-color: blue;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+}
+
+
+.login-button:hover {
+
+    background-color: darkblue;
+
+}
+
+
+/* Links */
+
+.login-container a {
+
+    color: blue;
+
+    text-decoration: none;
+
+}
+
+
+.login-container a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* Messages */
+
+.message {
+
+    padding: 10px;
+
+    margin-bottom: 15px;
+
+    border-radius: 5px;
+
+}
+
+</style>
+
+
+<script>
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const checkbox =
+        document.getElementById("showPassword");
+
+    if (checkbox.checked) {
+
+        password.type = "text";
+
+    } else {
+
+        password.type = "password";
+
+    }
+
+}
+
+</script>
+
+
+{% endblock %}

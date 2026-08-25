@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Employer Login Successful</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+
+            margin: 0;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            height: 100vh;
+        }
+
+        .success-container {
+
+            width: 400px;
+
+            background: white;
+
+            padding: 40px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-container h1 {
+
+            color: #16a34a;
+
+            margin-bottom: 20px;
+        }
+
+        .success-container p {
+
+            font-size: 18px;
+
+            color: #555;
+
+            margin-bottom: 10px;
+        }
+
+        .success-icon {
+
+            font-size: 50px;
+
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+    <script>
+
+        // Redirect to Employer Dashboard after 2 seconds
+
+        setTimeout(function() {
+
+            window.location.href =
+                "{% url 'employer_dashboard' %}";
+
+        }, 2000);
+
+    </script>
+
+</head>
+
+
+<body>
+
+
+    <div class="success-container">
+
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+
+        <h1>
+            Employer Login Successful!
+        </h1>
+
+
+        <p>
+            Welcome to the Employer Dashboard.
+        </p>
+
+
+        <p>
+            Redirecting to dashboard...
+        </p>
+
+
+    </div>
+
+
+</body>
+
+</html>

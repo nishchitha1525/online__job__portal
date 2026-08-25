@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}
+Employer Login
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <h1>🏢 Employer Login</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label for="username">Username</label>
+
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            required
+        >
+
+        <label for="password">Password</label>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+        >
+
+        <button type="submit" class="login-button">
+            Login
+        </button>
+
+    </form>
+
+    <p>
+        <a href="{% url 'forgot_password' %}">
+            Forgot Password?
+        </a>
+    </p>
+
+    <p>
+        Don't have an account?
+        <a href="{% url 'employer_register' %}">
+            Register as Employer
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'login' %}">
+            ← Back to Login Selection
+        </a>
+    </p>
+
+</div>
+
+<style>
+.login-container {
+    width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    text-align: center;
+}
+
+.login-container label {
+    display: block;
+    text-align: left;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.login-container input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+.login-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-button:hover {
+    background-color: darkblue;
+}
+
+.login-container a {
+    color: blue;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+</style>
+
+{% endblock %}

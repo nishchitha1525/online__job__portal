@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+
+    <style>
+        body{
+            font-family:Arial, sans-serif;
+            background:#f4f4f4;
+            margin:0;
+        }
+
+        .navbar{
+            background:#007bff;
+            padding:15px;
+            text-align:center;
+        }
+
+        .navbar a{
+            color:white;
+            text-decoration:none;
+            margin:15px;
+            font-size:18px;
+            font-weight:bold;
+        }
+
+        .container{
+            width:450px;
+            margin:50px auto;
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 0 10px gray;
+        }
+
+        h2{
+            text-align:center;
+            color:#007bff;
+        }
+
+        p{
+            font-size:18px;
+            margin:15px 0;
+        }
+
+        .btn{
+            display:inline-block;
+            margin-top:20px;
+            padding:10px 20px;
+            background:green;
+            color:white;
+            text-decoration:none;
+            border-radius:5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <a href="/">Home</a>
+    <a href="/jobs/">Available Jobs</a>
+    <a href="/about/">About</a>
+    <a href="/contact/">Contact</a>
+</div>
+
+<div class="container">
+
+    <h2>User Profile</h2>
+
+    <p><strong>Username:</strong> {{ request.user.username }}</p>
+
+    <p><strong>Email:</strong> {{ request.user.email }}</p>
+
+    <a href="/jobs/" class="btn">Back to Jobs</a>
+    <a href="/change-password/" class="btn">Change Password</a>
+
+</div>
+
+</body>
+</html>

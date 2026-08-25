@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login - Online Job Portal
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <h1>Online Job Portal</h1>
+
+    <h2>Login to Your Account</h2>
+
+    <p>Select your account type to continue</p>
+
+
+    <!-- Job Seeker Login -->
+
+    <a href="{% url 'job_seeker_login' %}" class="login-option">
+
+        <div>
+            <h3>👤 Job Seeker Login</h3>
+
+            <p>
+                Search for jobs, apply for jobs
+                and check application status.
+            </p>
+        </div>
+
+    </a>
+
+
+    <!-- Employer Login -->
+
+    <a href="{% url 'employer_login' %}" class="login-option">
+
+        <div>
+            <h3>🏢 Employer Login</h3>
+
+            <p>
+                Post jobs, manage jobs
+                and view applications.
+            </p>
+        </div>
+
+    </a>
+
+
+    <div class="login-links">
+
+        <p>
+            <a href="{% url 'forgot_password' %}">
+                Forgot Password?
+            </a>
+        </p>
+
+        <p>
+            Don't have an account?
+            <a href="{% url 'register' %}">
+                Register
+            </a>
+        </p>
+
+        <p>
+            <a href="{% url 'home' %}">
+                ← Back to Home
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}
