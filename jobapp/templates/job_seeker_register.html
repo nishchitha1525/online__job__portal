@@ -99,12 +99,22 @@
     <h2>Job Seeker Registration</h2>
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="message">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+    {% for message in messages %}
+        <div class="message" id="message">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<script>
+    setTimeout(function() {
+        var message = document.getElementById("message");
+
+        if (message) {
+            message.style.display = "none";
+        }
+    }, 2000);
+</script>
 
     <form method="POST">
 
