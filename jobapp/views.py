@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages
-
+from django.db.models import Q
 from .models import Job, Application, Profile
 
 
@@ -892,11 +892,9 @@ def profile(request):
 def dashboard(request):
 
     if not request.user.is_authenticated:
-
         return redirect("job_seeker_login")
 
     try:
-
         profile = Profile.objects.get(
             user=request.user
         )
@@ -911,16 +909,29 @@ def dashboard(request):
         return redirect("login")
 
     if profile.role != "job_seeker":
-
         return redirect("employer_dashboard")
 
+    # Get search text
+    search_query = request.GET.get("search", "").strip()
+
+    # Get all jobs
     jobs_list = Job.objects.all().order_by("-id")
+
+    # Filter jobs when searching
+    if search_query:
+        jobs_list = jobs_list.filter(
+            Q(title__icontains=search_query) |
+            Q(company__icontains=search_query) |
+            Q(location__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
 
     return render(
         request,
         "seeker_dashboard.html",
         {
-            "jobs": jobs_list
+            "jobs": jobs_list,
+            "search_query": search_query
         }
     )
 
