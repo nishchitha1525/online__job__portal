@@ -147,4 +147,21 @@ urlpatterns = [
         name="forgot_password"
     ),
 
+    path(
+    "salary-prediction/",
+    views.salary_prediction,
+    name="salary_prediction"
+),
+
+path(
+    "save-job/<int:job_id>/",
+    views.save_job,
+    name="save_job"
+),
+
+path(
+    "saved-jobs/",
+    views.saved_jobs,
+    name="saved_jobs"
+),
 ]
