@@ -1,12 +1,10 @@
-```html
 <!DOCTYPE html>
 <html>
-<head>
 
+<head>
     <title>Job Seeker Dashboard</title>
 
     <style>
-
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f9;
@@ -30,13 +28,58 @@
             margin: 30px auto;
         }
 
+        /* =========================
+           MESSAGES
+           ========================= */
+
+        .message {
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+
+        .message.warning {
+            background: #fff3cd;
+            color: #664d03;
+            border: 1px solid #ffecb5;
+        }
+
+        .message.info {
+            background: #cff4fc;
+            color: #055160;
+            border: 1px solid #b6effb;
+        }
+
+        /* =========================
+           WELCOME
+           ========================= */
+
         .welcome {
             background: white;
             padding: 25px;
             border-radius: 10px;
             margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+
+        /* =========================
+           DASHBOARD ACTIONS
+           ========================= */
 
         .actions {
             display: flex;
@@ -53,18 +96,72 @@
             background: #28a745;
         }
 
+        .actions a:hover {
+            opacity: 0.9;
+        }
+
+        .actions .salary-btn {
+            background: #6f42c1;
+        }
+
+        .actions .saved-jobs-btn {
+            background: #fd7e14;
+        }
+
         .actions .logout {
             background: #dc3545;
         }
 
-        /* Search Section */
+        /* =========================
+           RECOMMENDED JOBS
+           ========================= */
+
+        .recommended-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommended-section h2 {
+            margin-top: 0;
+            color: #6f42c1;
+        }
+
+        .recommended-card {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-top: 15px;
+            border-left: 5px solid #6f42c1;
+            border-radius: 8px;
+        }
+
+        .recommended-card h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .recommended-card p {
+            margin: 8px 0;
+        }
+
+        .match {
+            color: #198754;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* =========================
+           SEARCH
+           ========================= */
 
         .search-box {
             background: white;
             padding: 25px;
             border-radius: 10px;
             margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .search-box h2 {
@@ -119,14 +216,16 @@
             color: #555;
         }
 
-        /* Job Cards */
+        /* =========================
+           JOB CARDS
+           ========================= */
 
         .job-card {
             background: white;
             padding: 25px;
             margin-bottom: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .job-card h2 {
@@ -138,6 +237,17 @@
             margin: 8px 0;
         }
 
+        /* =========================
+           JOB BUTTONS
+           ========================= */
+
+        .job-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
         .apply-btn {
             display: inline-block;
             background: #28a745;
@@ -145,12 +255,40 @@
             text-decoration: none;
             padding: 10px 18px;
             border-radius: 5px;
-            margin-top: 12px;
         }
 
         .apply-btn:hover {
             background: #218838;
         }
+
+        /* =========================
+           SAVE JOB BUTTON
+           ========================= */
+
+        .save-btn {
+            display: inline-block;
+            background: #fd7e14;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+        }
+
+        .save-btn:hover {
+            background: #e8590c;
+        }
+
+        .save-btn.saved {
+            background: #6c757d;
+        }
+
+        .save-btn.saved:hover {
+            background: #545b62;
+        }
+
+        /* =========================
+           NO JOBS
+           ========================= */
 
         .no-jobs {
             background: white;
@@ -158,173 +296,327 @@
             text-align: center;
             border-radius: 10px;
         }
-
     </style>
-
 </head>
 
 <body>
 
+    <!-- =========================
+         HEADER
+         ========================= -->
 
-<!-- Header -->
-
-<div class="header">
-
-    <h1>Job Seeker Dashboard</h1>
-
-</div>
-
-
-<div class="container">
-
-
-    <!-- Welcome Section -->
-
-    <div class="welcome">
-
-        <h2>
-            Welcome, {{ request.user.username }}
-        </h2>
-
-        <p>
-            Search for jobs and manage your applications from here.
-        </p>
-
+    <div class="header">
+        <h1>Job Seeker Dashboard</h1>
     </div>
 
 
-    <!-- Dashboard Actions -->
+    <div class="container">
 
-    <div class="actions">
+        <!-- =========================
+             DJANGO MESSAGES
+             ========================= -->
 
-        <a href="{% url 'my_applications' %}">
-            📋 My Applications
-        </a>
+        {% if messages %}
 
-        <a href="{% url 'logout' %}" class="logout">
-            Logout
-        </a>
+            {% for message in messages %}
 
-    </div>
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
 
-
-    <!-- Search Jobs -->
-
-    <div class="search-box">
-
-        <h2>Search Jobs</h2>
-
-        <form method="GET" action="{% url 'dashboard' %}" class="search-form">
-
-            <input
-                type="text"
-                name="search"
-                placeholder="Search by job title, company or location"
-                value="{{ search_query }}"
-            >
-
-            <button type="submit" class="search-btn">
-                🔍 Search
-            </button>
-
-            {% if search_query %}
-                <a href="{% url 'dashboard' %}" class="clear-btn">
-                    Clear
-                </a>
-            {% endif %}
-
-        </form>
-
-        {% if search_query %}
-
-            <p class="search-result">
-                Search results for:
-                <strong>{{ search_query }}</strong>
-            </p>
+            {% endfor %}
 
         {% endif %}
 
-    </div>
 
+        <!-- =========================
+             WELCOME SECTION
+             ========================= -->
 
-    <!-- Available Jobs -->
+        <div class="welcome">
 
-    {% if search_query %}
-
-        <h2>Search Results</h2>
-
-    {% else %}
-
-        <h2>Available Jobs</h2>
-
-    {% endif %}
-
-
-    {% for job in jobs %}
-
-        <div class="job-card">
-
-            <h2>{{ job.title }}</h2>
+            <h2>
+                Welcome, {{ request.user.username }}
+            </h2>
 
             <p>
-                <strong>Company:</strong>
-                {{ job.company }}
+                Search for jobs and manage your applications from here.
             </p>
 
-            <p>
-                <strong>Location:</strong>
-                {{ job.location }}
-            </p>
+        </div>
 
-            <p>
-                <strong>Salary:</strong>
-                {{ job.salary }}
-            </p>
 
-            <p>
-                <strong>Description:</strong>
-                {{ job.description }}
-            </p>
+        <!-- =========================
+             DASHBOARD ACTIONS
+             ========================= -->
 
-            <a
-                href="{% url 'apply' %}?job_id={{ job.id }}"
-                class="apply-btn"
-            >
-                Apply for Job
+        <div class="actions">
+
+            <a href="{% url 'my_applications' %}">
+                📋 My Applications
+            </a>
+
+            <a href="{% url 'salary_prediction' %}" class="salary-btn">
+                💰 Salary Prediction
+            </a>
+
+            <a href="{% url 'saved_jobs' %}" class="saved-jobs-btn">
+                ⭐ Saved Jobs
+            </a>
+
+            <a href="{% url 'logout' %}" class="logout">
+                Logout
             </a>
 
         </div>
 
-    {% empty %}
 
-        <div class="no-jobs">
+        <!-- =========================
+             RECOMMENDED JOBS
+             ========================= -->
 
-            {% if search_query %}
+        <div class="recommended-section">
 
-                <h3>No Jobs Found</h3>
+            <h2>🤖 Recommended Jobs</h2>
 
-                <p>
-                    No jobs match your search.
-                    Try another job title, company, or location.
-                </p>
+            <p>
+                Jobs recommended based on your skills.
+            </p>
+
+            {% if recommended_jobs %}
+
+                {% for job in recommended_jobs %}
+
+                    <div class="recommended-card">
+
+                        <h3>
+                            {{ job.title }}
+                        </h3>
+
+                        <p>
+                            <strong>Company:</strong>
+                            {{ job.company }}
+                        </p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            {{ job.location }}
+                        </p>
+
+                        <p>
+                            <strong>Salary:</strong>
+                            ₹{{ job.salary }}
+                        </p>
+
+                        <p>
+                            <strong>Skills:</strong>
+                            {{ job.skills }}
+                        </p>
+
+                        <p class="match">
+                            🎯 Skill Match:
+                            {{ job.match_percentage }}%
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                            {{ job.description }}
+                        </p>
+
+                    </div>
+
+                {% endfor %}
 
             {% else %}
 
-                <h3>No Jobs Available</h3>
-
                 <p>
-                    Please check again later.
+                    No recommended jobs available.
                 </p>
 
             {% endif %}
 
         </div>
 
-    {% endfor %}
+
+        <!-- =========================
+             SEARCH JOBS
+             ========================= -->
+
+        <div class="search-box">
+
+            <h2>Search Jobs</h2>
+
+            <form
+                method="GET"
+                action="{% url 'dashboard' %}"
+                class="search-form"
+            >
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by job title, company or location"
+                    value="{{ search_query }}"
+                >
+
+                <button type="submit" class="search-btn">
+                    🔍 Search
+                </button>
+
+                {% if search_query %}
+
+                    <a
+                        href="{% url 'dashboard' %}"
+                        class="clear-btn"
+                    >
+                        Clear
+                    </a>
+
+                {% endif %}
+
+            </form>
 
 
-</div>
+            {% if search_query %}
+
+                <p class="search-result">
+                    Search results for:
+                    <strong>{{ search_query }}</strong>
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =========================
+             AVAILABLE JOBS
+             ========================= -->
+
+        {% if search_query %}
+
+            <h2 style="font-weight: normal;">
+                Search Results
+            </h2>
+
+        {% else %}
+
+            <h2 style="font-weight: normal;">
+                Available Jobs
+            </h2>
+
+        {% endif %}
+
+
+        <!-- =========================
+             JOB LIST
+             ========================= -->
+
+        {% for job in jobs %}
+
+            <div class="job-card">
+
+                <h2>
+                    {{ job.title }}
+                </h2>
+
+                <p>
+                    <strong>Company:</strong>
+                    {{ job.company }}
+                </p>
+
+                <p>
+                    <strong>Location:</strong>
+                    {{ job.location }}
+                </p>
+
+                <p>
+                    <strong>Salary:</strong>
+                    {{ job.salary }}
+                </p>
+
+                <p>
+                    <strong>Last Date to Apply:</strong>
+                    {{ job.last_date|date:"d-m-Y" }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ job.description }}
+                </p>
+
+
+                <!-- JOB BUTTONS -->
+
+                <div class="job-buttons">
+
+                    <!-- APPLY -->
+
+                    <a
+                        href="{% url 'apply' %}?job_id={{ job.id }}"
+                        class="apply-btn"
+                    >
+                        Apply for Job
+                    </a>
+
+
+                    <!-- SAVE JOB -->
+
+                    {% if job.id in saved_job_ids %}
+
+                        <a
+                            href="{% url 'save_job' job.id %}"
+                            class="save-btn saved"
+                        >
+                            ★ Saved
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'save_job' job.id %}"
+                            class="save-btn"
+                        >
+                            ☆ Save Job
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <!-- NO JOBS -->
+
+            <div class="no-jobs">
+
+                {% if search_query %}
+
+                    <h3>No Jobs Found</h3>
+
+                    <p>
+                        No jobs match your search.
+                        Try another job title, company, or location.
+                    </p>
+
+                {% else %}
+
+                    <h3>No Jobs Available</h3>
+
+                    <p>
+                        Please check again later.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
 
 </body>
+
 </html>
-```
