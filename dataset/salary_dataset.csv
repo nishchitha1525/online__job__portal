@@ -1,0 +1,29 @@
+job_title,experience,education,skills,salary
+Software Developer,1,Bachelor,Python Django SQL,300000
+Software Developer,2,Bachelor,Python Django SQL,400000
+Software Developer,3,Bachelor,Python Django REST API SQL,500000
+Software Developer,5,Master,Python Django REST API AWS,700000
+Web Developer,1,Bachelor,HTML CSS JavaScript,250000
+Web Developer,2,Bachelor,HTML CSS JavaScript Bootstrap,350000
+Web Developer,3,Bachelor,HTML CSS JavaScript React,450000
+Web Developer,5,Master,HTML CSS JavaScript React Node.js,650000
+Data Analyst,1,Bachelor,Python SQL Excel,300000
+Data Analyst,2,Bachelor,Python SQL Excel Power BI,400000
+Data Analyst,3,Bachelor,Python SQL Excel Power BI Tableau,500000
+Data Analyst,5,Master,Python SQL Power BI Tableau Machine Learning,750000
+Data Scientist,1,Master,Python SQL Machine Learning,450000
+Data Scientist,2,Master,Python SQL Machine Learning Pandas,550000
+Data Scientist,3,Master,Python SQL Machine Learning Pandas NumPy,700000
+Data Scientist,5,Master,Python SQL Machine Learning Deep Learning TensorFlow,1000000
+Java Developer,1,Bachelor,Java SQL OOP,300000
+Java Developer,2,Bachelor,Java SQL Spring,400000
+Java Developer,3,Bachelor,Java SQL Spring Hibernate,550000
+Java Developer,5,Master,Java Spring Hibernate Microservices AWS,800000
+Python Developer,1,Bachelor,Python SQL,300000
+Python Developer,2,Bachelor,Python Django SQL,400000
+Python Developer,3,Bachelor,Python Django REST API SQL,550000
+Python Developer,5,Master,Python Django REST API Docker AWS,750000
+Full Stack Developer,1,Bachelor,HTML CSS JavaScript Python,350000
+Full Stack Developer,2,Bachelor,HTML CSS JavaScript React Node.js,500000
+Full Stack Developer,3,Bachelor,React Node.js Python MongoDB,650000
+Full Stack Developer,5,Master,React Node.js Python AWS Docker MongoDB,900000
