@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salary Prediction</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            background: #e8f5e9;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .result h2 {
+            margin: 0;
+            color: #198754;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Salary Prediction</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Job Title</label>
+        <input
+            type="text"
+            name="job_title"
+            placeholder="Example: Python Developer"
+            required
+        >
+
+        <label>Experience (Years)</label>
+        <input
+            type="number"
+            name="experience"
+            min="0"
+            step="0.1"
+            placeholder="Example: 2"
+            required
+        >
+
+        <label>Education</label>
+        <select name="education" required>
+            <option value="">Select Education</option>
+            <option value="Bachelor">Bachelor</option>
+            <option value="Master">Master</option>
+        </select>
+
+        <label>Skills</label>
+        <input
+            type="text"
+            name="skills"
+            placeholder="Example: Python Django SQL"
+            required
+        >
+
+        <button type="submit">
+            Predict Salary
+        </button>
+
+    </form>
+
+    {% if prediction %}
+        <div class="result">
+            <h2>Predicted Salary</h2>
+            <p>₹{{ prediction|floatformat:0 }} per year</p>
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
