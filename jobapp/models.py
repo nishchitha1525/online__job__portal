@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -59,6 +58,19 @@ class Job(models.Model):
     )
 
     description = models.TextField()
+
+    # -----------------------------------------------------
+    # APPLICATION LAST DATE
+    # -----------------------------------------------------
+
+    last_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    # -----------------------------------------------------
+    # JOB CREATED DATE
+    # -----------------------------------------------------
 
     created_at = models.DateTimeField(
         auto_now_add=True
@@ -153,3 +165,55 @@ class Application(models.Model):
             return f"{self.fullname} - {self.job.title}"
 
         return self.fullname
+
+
+# =========================================================
+# SAVED JOB
+# =========================================================
+
+class SavedJob(models.Model):
+
+    # -----------------------------------------------------
+    # JOB SEEKER
+    # -----------------------------------------------------
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='saved_jobs'
+    )
+
+    # -----------------------------------------------------
+    # SAVED JOB
+    # -----------------------------------------------------
+
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE,
+        related_name='saved_by_users'
+    )
+
+    # -----------------------------------------------------
+    # SAVED DATE
+    # -----------------------------------------------------
+
+    saved_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    # -----------------------------------------------------
+    # PREVENT DUPLICATE SAVED JOBS
+    # -----------------------------------------------------
+
+    class Meta:
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'job'],
+                name='unique_saved_job'
+            )
+        ]
+
+    def __str__(self):
+
+        return f"{self.user.username} - {self.job.title}"
