@@ -3,7 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages
 from django.db.models import Q
-from .models import Job, Application, Profile
+
+from .models import Job, Application, Profile, SavedJob
+
+from ml.salary_prediction import predict_salary
+from ml.job_recommendation import recommend_jobs
 
 
 # =========================================================
@@ -42,14 +46,13 @@ def job_seeker_login(request):
         if user is not None:
 
             try:
+
                 profile = Profile.objects.get(user=user)
 
                 if profile.role == "job_seeker":
 
-                    # Login user
                     auth_login(request, user)
 
-                    # Show login success page
                     return render(
                         request,
                         "login_success.html"
@@ -76,8 +79,6 @@ def job_seeker_login(request):
                 "Invalid Username or Password."
             )
 
-    # IMPORTANT:
-    # Show login page when opening the URL normally
     return render(
         request,
         "job_seeker_login.html"
@@ -104,15 +105,12 @@ def employer_login(request):
         if user is not None:
 
             try:
+
                 profile = Profile.objects.get(user=user)
 
                 if profile.role == "employer":
 
                     auth_login(request, user)
-
-                    # Clear old messages
-                    storage = messages.get_messages(request)
-                    list(storage)
 
                     return render(
                         request,
@@ -162,13 +160,29 @@ def job_seeker_register(request):
 
     if request.method == "POST":
 
-        fullname = request.POST.get("fullname", "").strip()
-        email = request.POST.get("email", "").strip()
+        fullname = request.POST.get(
+            "fullname",
+            ""
+        ).strip()
+
+        email = request.POST.get(
+            "email",
+            ""
+        ).strip()
+
         password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
+
+        confirm_password = request.POST.get(
+            "confirm_password"
+        )
 
         # Check empty fields
-        if not fullname or not email or not password or not confirm_password:
+        if (
+            not fullname
+            or not email
+            or not password
+            or not confirm_password
+        ):
 
             messages.error(
                 request,
@@ -194,7 +208,9 @@ def job_seeker_register(request):
             )
 
         # Username check
-        if User.objects.filter(username=fullname).exists():
+        if User.objects.filter(
+            username=fullname
+        ).exists():
 
             messages.error(
                 request,
@@ -207,7 +223,9 @@ def job_seeker_register(request):
             )
 
         # Email check
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(
+            email=email
+        ).exists():
 
             messages.error(
                 request,
@@ -237,7 +255,9 @@ def job_seeker_register(request):
             "Job Seeker Registration Successful! Please Login."
         )
 
-        return redirect("job_seeker_login")
+        return redirect(
+            "job_seeker_login"
+        )
 
     return render(
         request,
@@ -253,13 +273,29 @@ def employer_register(request):
 
     if request.method == "POST":
 
-        fullname = request.POST.get("fullname", "").strip()
-        email = request.POST.get("email", "").strip()
+        fullname = request.POST.get(
+            "fullname",
+            ""
+        ).strip()
+
+        email = request.POST.get(
+            "email",
+            ""
+        ).strip()
+
         password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
+
+        confirm_password = request.POST.get(
+            "confirm_password"
+        )
 
         # Check empty fields
-        if not fullname or not email or not password or not confirm_password:
+        if (
+            not fullname
+            or not email
+            or not password
+            or not confirm_password
+        ):
 
             messages.error(
                 request,
@@ -285,7 +321,9 @@ def employer_register(request):
             )
 
         # Username check
-        if User.objects.filter(username=fullname).exists():
+        if User.objects.filter(
+            username=fullname
+        ).exists():
 
             messages.error(
                 request,
@@ -298,7 +336,9 @@ def employer_register(request):
             )
 
         # Email check
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(
+            email=email
+        ).exists():
 
             messages.error(
                 request,
@@ -328,7 +368,9 @@ def employer_register(request):
             "Employer Registration Successful! Please Login."
         )
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     return render(
         request,
@@ -342,10 +384,19 @@ def employer_register(request):
 
 def jobs(request):
 
-    title = request.GET.get("title", "").strip()
-    location = request.GET.get("location", "").strip()
+    title = request.GET.get(
+        "title",
+        ""
+    ).strip()
 
-    jobs_list = Job.objects.all().order_by("-id")
+    location = request.GET.get(
+        "location",
+        ""
+    ).strip()
+
+    jobs_list = Job.objects.all().order_by(
+        "-id"
+    )
 
     if title:
 
@@ -382,7 +433,9 @@ def apply(request):
             "Please login as a Job Seeker to apply for a job."
         )
 
-        return redirect("job_seeker_login")
+        return redirect(
+            "job_seeker_login"
+        )
 
     # Check Job Seeker profile
     try:
@@ -398,7 +451,9 @@ def apply(request):
             "Profile not found."
         )
 
-        return redirect("job_seeker_login")
+        return redirect(
+            "job_seeker_login"
+        )
 
     if profile.role != "job_seeker":
 
@@ -407,13 +462,18 @@ def apply(request):
             "Only Job Seekers can apply for jobs."
         )
 
-        return redirect("jobs")
+        return redirect(
+            "jobs"
+        )
 
     # Get Job ID
     job_id = request.GET.get("job_id")
 
     if not job_id:
-        job_id = request.POST.get("job_id")
+
+        job_id = request.POST.get(
+            "job_id"
+        )
 
     # Job ID missing
     if not job_id:
@@ -423,7 +483,9 @@ def apply(request):
             "Please select a job first."
         )
 
-        return redirect("jobs")
+        return redirect(
+            "jobs"
+        )
 
     # Get selected job
     job = get_object_or_404(
@@ -457,7 +519,9 @@ def apply(request):
             ""
         ).strip()
 
-        resume = request.FILES.get("resume")
+        resume = request.FILES.get(
+            "resume"
+        )
 
         # Check details
         if (
@@ -524,12 +588,11 @@ def apply(request):
             "Application submitted successfully!"
         )
 
-        return redirect("my_applications")
+        return redirect(
+            "my_applications"
+        )
 
-    # =====================================================
     # GET - SHOW APPLICATION FORM
-    # =====================================================
-
     return render(
         request,
         "apply.html",
@@ -547,7 +610,9 @@ def employer_dashboard(request):
 
     if not request.user.is_authenticated:
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     try:
 
@@ -562,7 +627,9 @@ def employer_dashboard(request):
             "Employer profile not found."
         )
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     if profile.role != "employer":
 
@@ -571,12 +638,16 @@ def employer_dashboard(request):
             "Only employers can access this page."
         )
 
-        return redirect("jobs")
+        return redirect(
+            "jobs"
+        )
 
     # Only this employer's jobs
     posted_jobs = Job.objects.filter(
         employer=request.user
-    ).order_by("-id")
+    ).order_by(
+        "-id"
+    )
 
     return render(
         request,
@@ -595,7 +666,9 @@ def employer_add_job(request):
 
     if not request.user.is_authenticated:
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     try:
 
@@ -610,7 +683,9 @@ def employer_add_job(request):
             "Profile not found."
         )
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     if profile.role != "employer":
 
@@ -619,7 +694,9 @@ def employer_add_job(request):
             "Only employers can add jobs."
         )
 
-        return redirect("jobs")
+        return redirect(
+            "jobs"
+        )
 
     if request.method == "POST":
 
@@ -648,8 +725,19 @@ def employer_add_job(request):
             ""
         ).strip()
 
+        # Get Last Date
+        last_date = request.POST.get(
+            "last_date",
+            ""
+        ).strip()
+
         # Required fields
-        if not title or not company or not location:
+        if (
+            not title
+            or not company
+            or not location
+            or not last_date
+        ):
 
             messages.error(
                 request,
@@ -668,15 +756,19 @@ def employer_add_job(request):
             company=company,
             location=location,
             salary=salary,
-            description=description
+            description=description,
+            last_date=last_date
         )
 
+        # Success message
         messages.success(
             request,
-            "Job Posted Successfully!"
+            "Job posted successfully!"
         )
 
-        return redirect("employer_dashboard")
+        return redirect(
+            "employer_dashboard"
+        )
 
     return render(
         request,
@@ -688,11 +780,16 @@ def employer_add_job(request):
 # EMPLOYER DELETE JOB
 # =========================================================
 
-def delete_job(request, job_id):
+def delete_job(
+    request,
+    job_id
+):
 
     if not request.user.is_authenticated:
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     # Only delete own job
     job = get_object_or_404(
@@ -707,10 +804,12 @@ def delete_job(request, job_id):
 
         messages.success(
             request,
-            "Job Deleted Successfully!"
+            "Job deleted successfully!"
         )
 
-        return redirect("employer_dashboard")
+        return redirect(
+            "employer_dashboard"
+        )
 
     return render(
         request,
@@ -729,7 +828,9 @@ def employer_applications(request):
 
     if not request.user.is_authenticated:
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     try:
 
@@ -744,7 +845,9 @@ def employer_applications(request):
             "Employer profile not found."
         )
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     if profile.role != "employer":
 
@@ -753,7 +856,9 @@ def employer_applications(request):
             "Only employers can view applications."
         )
 
-        return redirect("jobs")
+        return redirect(
+            "jobs"
+        )
 
     # Applications for this employer's jobs only
     applications = Application.objects.filter(
@@ -761,7 +866,9 @@ def employer_applications(request):
     ).select_related(
         "job",
         "applicant"
-    ).order_by("-id")
+    ).order_by(
+        "-id"
+    )
 
     return render(
         request,
@@ -783,7 +890,9 @@ def update_application_status(
 
     if not request.user.is_authenticated:
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     try:
 
@@ -798,7 +907,9 @@ def update_application_status(
             "Employer profile not found."
         )
 
-        return redirect("employer_login")
+        return redirect(
+            "employer_login"
+        )
 
     if profile.role != "employer":
 
@@ -807,7 +918,9 @@ def update_application_status(
             "Only employers can update application status."
         )
 
-        return redirect("jobs")
+        return redirect(
+            "jobs"
+        )
 
     # Only applications for this employer's jobs
     application = get_object_or_404(
@@ -818,12 +931,16 @@ def update_application_status(
 
     if request.method == "POST":
 
-        status = request.POST.get("status")
+        status = request.POST.get(
+            "status"
+        )
 
+        # Match Application.STATUS_CHOICES
         allowed_status = [
             "Pending",
-            "Accepted",
-            "Rejected"
+            "Shortlisted",
+            "Rejected",
+            "Selected"
         ]
 
         if status in allowed_status:
@@ -831,7 +948,10 @@ def update_application_status(
             application.status = status
             application.save()
 
-            
+            messages.success(
+                request,
+                f"Application status updated to {status}."
+            )
 
         else:
 
@@ -877,7 +997,9 @@ def profile(request):
 
     if not request.user.is_authenticated:
 
-        return redirect("login")
+        return redirect(
+            "login"
+        )
 
     return render(
         request,
@@ -892,9 +1014,13 @@ def profile(request):
 def dashboard(request):
 
     if not request.user.is_authenticated:
-        return redirect("job_seeker_login")
+
+        return redirect(
+            "job_seeker_login"
+        )
 
     try:
+
         profile = Profile.objects.get(
             user=request.user
         )
@@ -906,19 +1032,33 @@ def dashboard(request):
             "Profile not found."
         )
 
-        return redirect("login")
+        return redirect(
+            "login"
+        )
 
     if profile.role != "job_seeker":
-        return redirect("employer_dashboard")
 
-    # Get search text
-    search_query = request.GET.get("search", "").strip()
+        return redirect(
+            "employer_dashboard"
+        )
+
+    # =====================================================
+    # SEARCH
+    # =====================================================
+
+    search_query = request.GET.get(
+        "search",
+        ""
+    ).strip()
 
     # Get all jobs
-    jobs_list = Job.objects.all().order_by("-id")
+    jobs_list = Job.objects.all().order_by(
+        "-id"
+    )
 
     # Filter jobs when searching
     if search_query:
+
         jobs_list = jobs_list.filter(
             Q(title__icontains=search_query) |
             Q(company__icontains=search_query) |
@@ -926,19 +1066,170 @@ def dashboard(request):
             Q(description__icontains=search_query)
         )
 
+    # =====================================================
+    # AI/ML JOB RECOMMENDATION
+    # =====================================================
+
+    recommended_jobs = []
+
+    try:
+
+        # Sample skills for recommendation testing
+        user_skills = "Python Django SQL"
+
+        recommended_jobs = recommend_jobs(
+            user_skills,
+            top_n=5
+        )
+
+    except Exception as e:
+
+        print(
+            "Job recommendation error:",
+            e
+        )
+
+        recommended_jobs = []
+
+    # =====================================================
+    # SAVED JOBS
+    # =====================================================
+
+    saved_job_ids = set(
+        SavedJob.objects.filter(
+            user=request.user
+        ).values_list(
+            "job_id",
+            flat=True
+        )
+    )
+
+    # =====================================================
+    # DASHBOARD
+    # =====================================================
+
     return render(
         request,
         "seeker_dashboard.html",
         {
             "jobs": jobs_list,
-            "search_query": search_query
+            "search_query": search_query,
+            "recommended_jobs": recommended_jobs,
+            "saved_job_ids": saved_job_ids
         }
     )
 
 
 # =========================================================
-# LOGOUT
+# SAVE / UNSAVE JOB
 # =========================================================
+
+def save_job(
+    request,
+    job_id
+):
+
+    # User must be logged in
+    if not request.user.is_authenticated:
+
+        return redirect(
+            "job_seeker_login"
+        )
+
+    # Check Job Seeker profile
+    try:
+
+        profile = Profile.objects.get(
+            user=request.user
+        )
+
+    except Profile.DoesNotExist:
+
+        messages.error(
+            request,
+            "Profile not found."
+        )
+
+        return redirect(
+            "job_seeker_login"
+        )
+
+    # Only Job Seekers can save jobs
+    if profile.role != "job_seeker":
+
+        messages.error(
+            request,
+            "Only Job Seekers can save jobs."
+        )
+
+        return redirect(
+            "jobs"
+        )
+
+    # Get selected job
+    job = get_object_or_404(
+        Job,
+        id=job_id
+    )
+
+    # Check whether already saved
+    saved_job = SavedJob.objects.filter(
+        user=request.user,
+        job=job
+    ).first()
+
+    if saved_job:
+
+        # Remove saved job
+        saved_job.delete()
+
+        
+    else:
+
+        # Save job
+        SavedJob.objects.create(
+            user=request.user,
+            job=job
+        )
+
+        
+
+    # Return to dashboard
+    return redirect(
+        "dashboard"
+    )
+
+
+# =========================================================
+# SAVED JOBS
+# =========================================================
+
+def saved_jobs(request):
+
+    # User must be logged in
+    if not request.user.is_authenticated:
+
+        return redirect(
+            "job_seeker_login"
+        )
+
+    # Get saved jobs of current user
+    saved_jobs_list = SavedJob.objects.filter(
+        user=request.user
+    ).select_related(
+        "job"
+    ).order_by(
+        "-saved_at"
+    )
+
+    return render(
+        request,
+        "saved_jobs.html",
+        {
+            "saved_jobs": saved_jobs_list
+        }
+    )
+
 
 # =========================================================
 # LOGOUT
@@ -948,7 +1239,9 @@ def logout_user(request):
 
     logout(request)
 
-    return redirect("home")
+    return redirect(
+        "home"
+    )
 
 
 # =========================================================
@@ -959,14 +1252,18 @@ def my_applications(request):
 
     if not request.user.is_authenticated:
 
-        return redirect("job_seeker_login")
+        return redirect(
+            "job_seeker_login"
+        )
 
     # Only current user's applications
     applications = Application.objects.filter(
         applicant=request.user
     ).select_related(
         "job"
-    ).order_by("-id")
+    ).order_by(
+        "-id"
+    )
 
     return render(
         request,
@@ -985,7 +1282,9 @@ def change_password(request):
 
     if not request.user.is_authenticated:
 
-        return redirect("login")
+        return redirect(
+            "login"
+        )
 
     if request.method == "POST":
 
@@ -1002,7 +1301,9 @@ def change_password(request):
         )
 
         # Check old password
-        if not request.user.check_password(old_password):
+        if not request.user.check_password(
+            old_password
+        ):
 
             messages.error(
                 request,
@@ -1015,7 +1316,10 @@ def change_password(request):
             )
 
         # Check empty password
-        if not new_password or not confirm_password:
+        if (
+            not new_password
+            or not confirm_password
+        ):
 
             messages.error(
                 request,
@@ -1054,7 +1358,9 @@ def change_password(request):
             "Password Changed Successfully! Please Login Again."
         )
 
-        return redirect("login")
+        return redirect(
+            "login"
+        )
 
     return render(
         request,
@@ -1084,7 +1390,11 @@ def forgot_password(request):
         )
 
         # Check empty fields
-        if not email or not password or not confirm_password:
+        if (
+            not email
+            or not password
+            or not confirm_password
+        ):
 
             messages.error(
                 request,
@@ -1129,7 +1439,10 @@ def forgot_password(request):
             )
 
         # Change password
-        user.set_password(password)
+        user.set_password(
+            password
+        )
+
         user.save()
 
         messages.success(
@@ -1137,9 +1450,73 @@ def forgot_password(request):
             "Password Reset Successfully! Please Login."
         )
 
-        return redirect("login")
+        return redirect(
+            "login"
+        )
 
     return render(
         request,
         "forgot_password.html"
+    )
+
+
+# =========================================================
+# SALARY PREDICTION
+# =========================================================
+
+def salary_prediction(request):
+
+    prediction = None
+
+    job_title = ""
+    experience = ""
+    education = ""
+    skills = ""
+
+    if request.method == "POST":
+
+        job_title = request.POST.get(
+            "job_title"
+        )
+
+        experience = request.POST.get(
+            "experience"
+        )
+
+        education = request.POST.get(
+            "education"
+        )
+
+        skills = request.POST.get(
+            "skills"
+        )
+
+        try:
+
+            prediction = predict_salary(
+                job_title,
+                experience,
+                education,
+                skills
+            )
+
+        except Exception as e:
+
+            print(
+                "Salary prediction error:",
+                e
+            )
+
+            prediction = None
+
+    return render(
+        request,
+        "salary_prediction.html",
+        {
+            "prediction": prediction,
+            "job_title": job_title,
+            "experience": experience,
+            "education": education,
+            "skills": skills,
+        }
     )
